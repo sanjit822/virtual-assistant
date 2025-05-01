@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Futuristic AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1604079629972-8f30c1a3c379?auto=format&fit=crop&w=1400&q=80') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        #assistant {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 20px #00fff0, 0 0 30px #00c2ff, 0 0 40px #009dff;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            color: #00ffff;
+        }
+        #greeting {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #ff80ff;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #00f7ff, #8f00ff);
+            color: white;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+        button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ff00c8, #00ffe7);
+        }
+        #response {
+            margin-top: 20px;
+            font-size: 1.2em;
+            min-height: 60px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 15px;
+        }
+        .typing {
+            border-right: .15em solid #fff;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: white }
+        }
+        @media(max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            #assistant {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="assistant">
+        <h1>🚀 AI Assistant</h1>
+        <h2 id="greeting"></h2>
+        <input type="text" id="userInput" placeholder="Type or Speak...">
+        <br>
+        <button onclick="handleCommand()">Send</button>
+        <button onclick="startListening()">🎤 Speak</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        function greetUser() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting = '';
+
+            if (hour < 12) {
+                greeting = 'Good Morning!';
+            } else if (hour < 18) {
+                greeting = 'Good Afternoon!';
+            } else {
+                greeting = 'Good Evening!';
+            }
+            document.getElementById('greeting').innerText = greeting;
+        }
+
+        greetUser();
+
+        function handleCommand(inputText = null) {
+            let input = inputText || document.getElementById('userInput').value.toLowerCase();
+            const responseElement = document.getElementById('response');
+            showTypingEffect("Thinking...");
+
+            setTimeout(() => {
+                if (input.startsWith("open")) {
+                    let site = input.replace("open", "").trim();
+                    switch(site) {
+                        case "whatsapp":
+                            openLink("https://web.whatsapp.com", "Opening WhatsApp...");
+                            break;
+                        case "instagram":
+                            openLink("https://www.instagram.com", "Opening Instagram...");
+                            break;
+                        case "facebook":
+                            openLink("https://www.facebook.com", "Opening Facebook...");
+                            break;
+                        case "playstore":
+                            openLink("https://play.google.com/store", "Opening Play Store...");
+                            break;
+                        case "chatgpt":
+                            openLink("https://chat.openai.com", "Opening ChatGPT...");
+                            break;
+                        case "gemini":
+                            openLink("https://gemini.google.com", "Opening Gemini...");
+                            break;
+                        case "deepseek":
+                            openLink("https://www.deepseek.com", "Opening DeepSeek...");
+                            break;
+                        case "calculator":
+                            openLink("https://www.google.com/search?q=calculator", "Opening Calculator...");
+                            break;
+                        case "calendar":
+                            openLink("https://calendar.google.com", "Opening Calendar...");
+                            break;
+                        case "gmail":
+                            openLink("https://mail.google.com", "Opening Gmail...");
+                            break;
+                        case "maps":
+                            openLink("https://www.google.com/maps", "Opening Maps...");
+                            break;
+                        case "chrome":
+                            openLink("https://www.google.com/chrome/", "Opening Chrome...");
+                            break;
+                        case "youtube":
+                            openLink("https://www.youtube.com", "Opening YouTube...");
+                            break;
+                        default:
+                            speak("I couldn't find that app!");
+                            responseElement.innerText = "I couldn't find that app!";
+                    }
+                }
+                else if (input.startsWith("search")) {
+                    let query = input.replace("search", "").trim();
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, "_blank");
+                    speak(`Searching for ${query} on Google`);
+                    responseElement.innerText = `Searching "${query}" on Google...`;
+                }
+                else if (input.startsWith("play")) {
+                    let video = input.replace("play", "").trim();
+                    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(video)}`, "_blank");
+                    speak(`Playing ${video} on YouTube`);
+                    responseElement.innerText = `Playing "${video}" on YouTube...`;
+                }
+                else if (input.includes("date") || input.includes("day") || input.includes("month")) {
+                    const now = new Date();
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const dateStr = now.toLocaleDateString('en-US', options);
+                    speak(`Today is ${dateStr}`);
+                    responseElement.innerText = "Today is " + dateStr;
+                }
+                else if (input.includes("weather")) {
+                    let city = input.replace("weather", "").trim();
+                    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=YOUR_API_KEY&units=metric`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.cod === 200) {
+                                const temp = data.main.temp;
+                                const description = data.weather[0].description;
+                                speak(`The current weather in ${city} is ${temp}°C with ${description}.`);
+                                responseElement.innerText = `Weather in ${city}: ${temp}°C, ${description}`;
+                            } else {
+                                speak("Sorry, I couldn't find the weather for that city.");
+                                responseElement.innerText = "Couldn't find the weather for that city.";
+                            }
+                        })
+                        .catch(error => {
+                            speak("There was an error fetching the weather information.");
+                            responseElement.innerText = "Error fetching weather information.";
+                        });
+                }
+                else if (input.includes("joke")) {
+                    fetch('https://official-joke-api.appspot.com/random_joke')
+                        .then(response => response.json())
+                        .then(data => {
+                            const joke = `${data.setup} ${data.punchline}`;
+                            speak(joke);
+                            responseElement.innerText = joke;
+                        });
+                }
+                else if (input.includes("fact")) {
+                    fetch('https://uselessfacts.jsph.pl/random.json?language=en')
+                        .then(response => response.json())
+                        .then(data => {
+                            const fact = data.text;
+                            speak(fact);
+                            responseElement.innerText = `Did you know? ${fact}`;
+                        });
+                }
+                else if (input.includes("set timer")) {
+                    let time = parseInt(input.replace("set timer", "").trim());
+                    if (isNaN(time)) {
+                        speak("Please provide a valid time for the timer.");
+                        responseElement.innerText = "Invalid time format.";
+                    } else {
+                        setTimeout(() => {
+                            speak("Time's up!");
+                            responseElement.innerText = "Timer finished!";
+                        }, time * 1000);
+                        speak(`Setting a timer for ${time} seconds.`);
+                        responseElement.innerText = `Timer set for ${time} seconds.`;
+                    }
+                }
+                else {
+                    speak("Sorry, I didn't understand that. Try open, search, play, weather, joke, or timer commands!");
+                    responseElement.innerText = "Sorry, I didn't understand that.";
+                }
+                document.getElementById('userInput').value = "";
+            }, 1200);
+        }
+
+        function openLink(url, message) {
+            window.open(url, "_blank");
+            speak(message);
+            document.getElementById('response').innerText = message;
+        }
+
+        function showTypingEffect(text) {
+            const responseElement = document.getElementById('response');
+            responseElement.classList.add('typing');
+            responseElement.innerText = text;
+            setTimeout(() => responseElement.classList.remove('typing'), 1500);
+        }
+
+        function speak(message) {
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function startListening() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = "en-US";
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript.toLowerCase();
+                    handleCommand(transcript);
+                };
+
+                recognition.onerror = function(event) {
+                    alert('Speech recognition error: ' + event.error);
+                };
+            } else {
+                alert('Speech Recognition not supported in this browser.');
+            }
+        }
+    </script>
+
+</body>
+</html>
